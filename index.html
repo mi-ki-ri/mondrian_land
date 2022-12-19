@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mondrian Land</title>
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0 0 0 0;
+        padding: 0 0 0 0;
+      }
+      .heading {
+        text-align: center;
+      }
+      .container {
+        width: 100%;
+        height: 100vh;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        flex-direction: row;
+        flex-wrap: wrap;
+        background-color: transparent;
+      }
+      .wrapper {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        flex-direction: column;
+        padding: 5px;
+        margin: 5px;
+        border: 1px solid #ccc;
+      }
+      .svgs {
+        width: 320px;
+        height: 320px;
+        margin: 2.5rem;
+      }
+    </style>
+  </head>
+  <body>
+    <header><h1 class="heading">Mondrian Land</h1></header>
+
+    <main id="app" class="container"></main>
+
+    <script src="snap.svg-min.js"></script>
+    <script>
+      const canvasH = 320;
+      const canvasW = 320;
+      const canvasB = 16;
+
+      // Get Random Colors
+      fetch(
+        "https://unpkg.com/color-name-list/dist/colornames.bestof.json"
+      ).then((val) => {
+        val.json().then((colors) => {
+          for (let i = 0; i < 24; i++) {
+            const app = document.getElementById("app");
+
+            let color_base = colors[Math.floor(Math.random() * colors.length)];
+            let color_assort =
+              colors[Math.floor(Math.random() * colors.length)];
+            let color_accent =
+              colors[Math.floor(Math.random() * colors.length)];
+
+            const s_obj = document.createElementNS(
+              "http://www.w3.org/2000/svg",
+              "svg"
+            );
+            s_obj.setAttribute("id", `svg${i}`);
+            s_obj.setAttribute("width", canvasW);
+            s_obj.setAttribute("height", canvasH);
+            s_obj.classList.add("svgs");
+
+            const t_obj = document.createElement("ul");
+            t_obj.innerHTML = `<li>Base: ${color_base.name}(${color_base.hex})</li><li>Assort: ${color_assort.name}(${color_assort.hex})</li><li>Accent: ${color_accent.name}(${color_accent.hex})</li>`;
+
+            const w_obj = document.createElement("div");
+            w_obj.classList.add("wrapper");
+            w_obj.appendChild(s_obj);
+            w_obj.appendChild(t_obj);
+
+            app.appendChild(w_obj);
+            const s = Snap(`#svg${i}`);
+
+            console.log(s);
+            if (s === null) return;
+
+            const rect_base = s.rect(
+              canvasB / 2,
+              canvasB / 2,
+              canvasW - canvasB,
+              canvasH - canvasB
+            );
+            const rect_assort = s.rect(
+              canvasW / 2 - canvasB,
+              canvasH / 2 - canvasB,
+              canvasW / 2 + canvasB / 2,
+              canvasH / 2 + canvasB / 2
+            );
+            const rect_accent = s.rect(
+              canvasW / 8 + canvasB / 2,
+              canvasH - (canvasH * 2) / 2 + canvasB / 2,
+              canvasW / 4,
+              canvasW / 4
+            );
+
+            rect_base.attr({
+              fill: color_base.hex,
+              stroke: "#000",
+              strokeWidth: canvasB,
+            });
+            rect_assort.attr({
+              fill: color_assort.hex,
+              stroke: "#000",
+              strokeWidth: canvasB,
+            });
+            rect_accent.attr({
+              fill: color_accent.hex,
+              stroke: "#000",
+              strokeWidth: canvasB,
+            });
+          }
+        });
+      });
+    </script>
+  </body>
+</html>
